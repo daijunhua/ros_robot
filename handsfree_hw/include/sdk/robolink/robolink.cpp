@@ -494,4 +494,5 @@ void RoboLink::sendStruct(const Command command_type , unsigned char *p , const 
         memcpy(&tx_message.data[1] , p , len);
     }
     sendMessage(&tx_message);
+    //std::cerr<<"-------------the command type is: "<<command_type<<std::endl ;
 }

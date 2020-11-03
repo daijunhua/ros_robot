@@ -60,10 +60,12 @@ if __name__ == '__main__':
     rospy.init_node('smach_serial_demo2',log_level=rospy.DEBUG)
     server_movebase = actionlib.SimpleActionClient('/move_base', move_base_msgs.msg.MoveBaseAction)
     connect_state = server_movebase.wait_for_server()
-    points = [[10.58,35.83],  # target point 1  only need x and y
-              [8.88,12.18],  # target point 2
-              [18.04,21.29],  # target point 3
-              [18.75,36.58]]  # target point 4
+    points = [[1.49,2.72],  # target point 1  only need x and y
+              [2.49,0.79],  # target point 2
+              [3.61,-2.61],  # target point 3
+              [6.44,-6.33],  # target point 4
+              [9.25,-8.36],  # target point 5
+              [0.25,1.03]]  # target point 6
     if connect_state is not True:
         # please to ensure weather your move_base server is opened?
         rospy.logerr('can not connect to move_base server')

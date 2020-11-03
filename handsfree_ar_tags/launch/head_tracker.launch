@@ -1,0 +1,29 @@
+<!-- -->
+
+<!-- 让机器人云台跟踪AR　Marker的3D位置 -->
+
+<launch>
+
+  <node pkg="handsfree_ar_tags" name="head_tracker" type="head_tracker.py" clear_params="true" output="screen">
+  <remap from="/head_tilt_joint/command" to="/mobile_base/pitch_position_controller/command"/>
+  <remap from="/head_pan_joint/command" to="/mobile_base/yaw_position_controller/command"/>
+  <remap from="/joint_states" to="/mobile_base/joint_states"/>
+  <!--remap from="/ar_pose_marker" to="/ar_pose_marker"/-->
+
+    <rosparam>
+       rate: 10
+       recenter_timeout: 10
+       max_lead_target_angle: 0.5
+       pan_threshold: 0.02
+       tilt_threshold: 0.02
+       gain_pan: 1.5
+       gain_tilt: 1.5
+       max_pan: 1.2
+       min_pan: -1.2
+       max_tilt: 0.9
+       min_tilt: -0.9
+    </rosparam>
+    
+  </node>
+
+</launch>
