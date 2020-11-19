@@ -28,7 +28,7 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 from sensor_msgs.msg import JointState
 from std_msgs.msg import Float64
 from geometry_msgs.msg import PointStamped, Point, Pose, PoseStamped
-from math import radians, atan
+from math import radians, atan2
 #import tf
 import os, thread
 
@@ -327,9 +327,6 @@ class HeadTracker():
             # be stored as a PointStamped() message.
 
             target = marker.pose.pose.position
-
-            #target.header.frame_id = msg.header.frame_id
-            #target.point = msg.pose.position
                     
             # Project the target point onto the camera link
             #camera_target = self.tf.transformPoint(self.camera_link, target)
@@ -345,11 +342,11 @@ class HeadTracker():
             # Since the Kinect is or Xtion is blind to distance within 0.5 meters, check for an exception and
             # use 0.5 meters as a fall back.
             try:
-                pan = atan(pan/ distance)
-                tilt = atan(tilt/ distance)
+                pan = atan2(pan, distance)
+                tilt = atan2(tilt, distance)
             except:
-                pan = atan(pan/ 0.5)
-                tilt = atan(tilt/ 0.5)
+                pan = atan2(pan, 0.5)
+                tilt = atan2(tilt, 0.5)
                 
             # Pan the camera only if the displacement of the target point exceeds the threshold.
             if abs(pan) > self.pan_threshold:
@@ -363,8 +360,8 @@ class HeadTracker():
                 else:
                     self.pan_position = min(self.max_pan, current_pan + delta_pan)
                     
-            else:
-                self.pan_position = max(self.min_pan, min(self.max_pan, pan))
+            # else:
+                # self.pan_position = max(self.min_pan, min(self.max_pan, pan))
             
             # Tilt the camera only if the displacement of the target point exceeds the threshold.
             if abs(tilt) > self.tilt_threshold:
@@ -378,8 +375,8 @@ class HeadTracker():
                 else:
                     self.tilt_position = min(self.max_tilt, current_tilt + delta_tilt)
     
-            else:
-                self.tilt_position = max(self.min_tilt, min(self.max_tilt, tilt))
+            # else:
+                # self.tilt_position = max(self.min_tilt, min(self.max_tilt, tilt))
                 
         finally:
             self.lock.release()

@@ -12,12 +12,12 @@
 
     <rosparam>
        rate: 10
-       recenter_timeout: 10
+       recenter_timeout: 20
        max_lead_target_angle: 0.5
        pan_threshold: 0.02
        tilt_threshold: 0.02
-       gain_pan: 1.5
-       gain_tilt: 1.5
+       gain_pan: 2.0
+       gain_tilt: 2.0
        max_pan: 1.2
        min_pan: -1.2
        max_tilt: 0.9

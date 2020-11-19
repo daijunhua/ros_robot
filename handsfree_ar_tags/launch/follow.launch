@@ -1,0 +1,21 @@
+<!-- -->
+
+<!-- 让机器人底盘跟踪AR　Marker的3D位置,以及云台pan, 并实现避障-->
+
+<launch>
+
+  <node pkg="handsfree_ar_tags" name="follow" type="follow.py" clear_params="true" output="screen">
+  <!--remap from="/cmd_vel" to="/mobile_base/mobile_base_controller/cmd_vel"/-->
+  <remap from="/joint_states" to="/mobile_base/joint_states"/>
+  <!--remap from="/ar_pose_marker" to="/ar_pose_marker"/-->
+
+    <rosparam>
+       rate: 10
+       goal_x: 0.2
+       robot_goal_yaw_threshold: 0.12
+       robot_goal_distance_threshold: 0.1
+    </rosparam>
+    
+  </node>
+
+</launch>
