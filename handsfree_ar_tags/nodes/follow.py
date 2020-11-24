@@ -205,8 +205,8 @@ class ARFollower():
         dx = self.goal.x - self.last_rt_position.x
         dy = self.goal.y - self.last_rt_position.y
         d_dis = sqrt(dx * dx + dy * dy)
-        rospy.loginfo("---------------d_dis: %f",d_dis)
-        rospy.loginfo("---------------last_x: %f,last_y: %f",self.last_rt_position.x, self.last_rt_position.y)
+        rospy.loginfo("--------d_dis: %f",d_dis)
+        #rospy.loginfo("---------------last_x: %f,last_y: %f",self.last_rt_position.x, self.last_rt_position.y)
 
         # If the position of the goal pose changes sufficiently, change the goal position
         if d_dis > self.distance_threshold:

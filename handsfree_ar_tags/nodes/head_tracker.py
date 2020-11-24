@@ -136,6 +136,12 @@ class HeadTracker():
         # Set a timer to determine how long a target is no longer visible
         self.target_lost_time = 0.0
         
+        # Search param
+        self.sp = []
+        self.st = []
+        self.get_search_point()
+
+
         # A flag to indicate whether we're in wait mode
         self.waiting = False
         #rospy.loginfo("--------------test 1--------------------")
@@ -219,9 +225,13 @@ class HeadTracker():
                 # If the target is lost for a bit, search for it
                 elif self.enable_target_search and self.target_lost_time > self.search_target_timeout:
                     rospy.loginfo("Searching for target...")
-                    #self.search_for_target()<---------disable search------------->
-                    
-                    self.target_lost_time += self.recenter_timeout
+                    #s_pan = self.s_p_[self.search_p][0]
+                    #s_tilt = self.s_p_[self.search_p][1]
+                    self.search_for_target()
+
+                    #self.search_p = (self.search_p + 1)%len(self.s_p_)
+
+                    #self.target_lost_time += self.recenter_timeout
                     
                 else:               
                     # Only update the pan speed if it differs enough from the last value
@@ -246,6 +256,46 @@ class HeadTracker():
                                     
             r.sleep()
             
+
+    def get_search_point(self):
+        # The start pose of pan/tilt for searching target
+        p_start = 0.6
+        t_start = 0.4
+
+        # The range of pan/tilt moving for searching target
+        p_range = 1.2
+        t_range = 1.0
+
+        # How many pose dose pan/tilt will search
+        p_step = 8
+        t_step = 26
+
+        # The searching pointer of pan/tilt, range: (0, p_step(or t_step)-1)
+        search_p = search_t = 0
+
+        self.sp = [p_start, p_range, p_step, search_p]
+        self.st = [t_start, t_range, t_step, search_t]
+
+
+    def search_for_target(self):
+        # Cal pan/tilt pose
+        s_pan = self.sp[0]-self.sp[3]*self.sp[1]/(self.sp[2]-1)
+        if self.sp[3]%2 == 0:
+            s_tilt = self.st[0]-self.st[3]*self.st[1]/(self.st[2]-1)
+        else:
+            s_tilt = self.st[0]-(self.st[2]-self.st[3]-1)*self.st[1]/(self.st[2]-1)
+
+        # Move head
+        self.servo_position[self.head_pan_joint].publish(s_pan)
+        self.servo_position[self.head_tilt_joint].publish(s_tilt)
+
+        # Update the searching pointers
+        self.st[3] = (self.st[3]+1)%self.st[2]
+        if self.st[3] == 0:
+            self.sp[3] = (self.sp[3]+1)%self.sp[2]
+        #rospy.sleep(2)
+
+
     def init_servos(self):
         # Create dictionaries to hold the speed, position and torque controllers
         #self.servo_speed = dict()
@@ -396,7 +446,7 @@ class HeadTracker():
             self.servo_position[self.head_tilt_joint].publish(0)
             
             rospy.sleep(0.5)
-            
+
             current_tilt = self.joint_state.position[self.joint_state.name.index(self.pitch_joint)]
             current_pan = self.joint_state.position[self.joint_state.name.index(self.yaw_joint)]    
                         
